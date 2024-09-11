@@ -1,40 +1,61 @@
+/* Estilos gerais para o corpo */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
+    padding: 0;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('imagens/fundo.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
+/* Container principal */
 .container {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     text-align: center;
-    margin: 20px auto;
-    max-width: 600px;
+    max-width: 500px;
     width: 100%;
 }
 
+/* Títulos */
 h1 {
     color: #4CAF50;
+    margin-top: 0;
+    font-size: 2em;
 }
 
-p {
-    font-size: 18px;
-    color: #555;
+/* Mensagens */
+.message {
+    background-color: #ffeb3b;
+    color: #333;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
 }
 
+/* Formulário */
 form {
     margin-top: 20px;
+    text-align: left; /* Alinha o texto à esquerda para melhor visualização dos botões de rádio */
 }
 
-input[type="radio"] {
-    margin: 10px;
+/* Inputs de texto */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
 }
 
+/* Botões */
 button {
     background-color: #4CAF50;
     color: white;
@@ -43,16 +64,62 @@ button {
     font-size: 16px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
     background-color: #45a049;
 }
 
-.message {
-    margin-bottom: 20px;
-    color: #FF0000;
+/* Radio buttons e labels */
+form p {
+    margin: 0;
 }
+
+input[type="radio"] {
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    font-size: 16px;
+}
+
+/* Alinhamento dos itens de opções */
+.option-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.option-container input[type="radio"] {
+    margin-right: 10px; /* Ajusta o espaçamento entre o botão de rádio e o texto */
+}
+
+.option-container label {
+    display: inline;
+    margin: 0;
+}
+
+/* Controles de áudio */
+.audio-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+audio {
+    width: 100%;
+    max-width: 300px;
+}
+
 
 .audio-controls {
     background-color: #fff;

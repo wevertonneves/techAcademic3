@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['collected_items'][] = $currentStage['item_name'];
         $_SESSION['current_stage']++;
 
-        // Atualiza o progresso do jogador no banco de dados
+       
         $player_id = $_SESSION['player_id'];
         $collected_items = implode(',', $_SESSION['collected_items']);
         $current_stage = $_SESSION['current_stage'];
