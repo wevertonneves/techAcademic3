@@ -1,53 +1,68 @@
 <?php
 session_start();
 
+// URL base do seu back-end Java
+$baseUrl = "http://localhost:8080";
 
-$conn = new mysqli("localhost", "root", "", "adventure_game");
-if ($conn->connect_error) {
-    die("Erro de conexão: " . $conn->connect_error);
+// Função para fazer requisições HTTP
+function httpRequest($url, $method = 'GET', $data = null) {
+    $options = [
+        'http' => [
+            'header' => "Content-Type: application/json\r\n",
+            'method' => $method,
+            'content' => $data ? json_encode($data) : ''
+        ]
+    ];
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    return json_decode($result, true);
 }
 
-
-function loadStages($conn) {
-    $stages = [];
-    $sql = "SELECT s.id, s.description, s.question, s.options, s.hint, s.correct_option_index, i.name AS item_name 
-            FROM stages s LEFT JOIN items i ON s.required_item_id = i.id";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $stages[] = $row;
-        }
-    }
-    return $stages;
-}
-
-
+// Verifica se o jogador já foi registrado
 if (!isset($_SESSION['player_name'])) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])) {
         $player_name = $_POST['player_name'];
 
-        
-        $sql = "INSERT INTO players (name, current_stage) VALUES ('$player_name', 0)";
-        if ($conn->query($sql) === TRUE) {
+        // Faz uma requisição POST para registrar o jogador
+        $response = httpRequest("$baseUrl/players", 'POST', ['name' => $player_name]);
+
+        if (isset($response['id'])) {
             $_SESSION['player_name'] = $player_name;
+            $_SESSION['player_id'] = $response['id'];
             $_SESSION['current_stage'] = 0;
             $_SESSION['collected_items'] = [];
-            $_SESSION['player_id'] = $conn->insert_id;
-            $_SESSION['stages'] = loadStages($conn);
-        } else {
-            echo "Erro ao registrar jogador: " . $conn->error;
-            exit;
-        }}}
-   
-        
 
-if (!isset($_SESSION['stages'])) {
-    $_SESSION['stages'] = loadStages($conn);
-    $_SESSION['current_stage'] = 0;
-    $_SESSION['collected_items'] = [];
+            // Carrega as fases via API
+            $_SESSION['stages'] = httpRequest("$baseUrl/stages");
+        } else {
+            echo "Erro ao registrar jogador.";
+            exit;
+        }
+    } else {
+        // Mostra o formulário de entrada do nome do jogador
+        echo '<!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <title>Jogo Text Adventure</title>
+            <style>/* CSS Aqui */</style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Bem-vindo ao Jogo Text Adventure!</h1>
+                <form method="post">
+                    <label for="player_name">Digite seu nome:</label>
+                    <input type="text" id="player_name" name="player_name" required>
+                    <button type="submit">Começar Jogo</button>
+                </form>
+            </div>
+        </body>
+        </html>';
+        exit;
+    }
 }
 
+// Carrega as fases
 $currentStageIndex = $_SESSION['current_stage'];
 $stages = $_SESSION['stages'];
 
@@ -59,42 +74,3 @@ if ($currentStageIndex >= count($stages)) {
 
 $currentStage = $stages[$currentStageIndex];
 ?>
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>techacademic3</title>
-    <link rel="stylesheet" href="css/estilos.css">
-    <link rel="shorcut icon" href="imagens/incone site.png">
-        
-    
-</head>
-<body>
-<div class="container">
-    <?php if (isset($_SESSION['message'])): ?>
-        <div class="message"><?php echo $_SESSION['message']; unset($_SESSION['message']); ?></div>
-    <?php endif; ?>
-
-    <h1><?php echo "Você está na fase: " . $currentStage['description']; ?></h1>
-    <p><?php echo "Dica: " . $currentStage['hint']; ?></p>
-    <form method="post" action="process.php">
-        <p><?php echo $currentStage['question']; ?></p>
-        <?php
-        $options = explode(",", $currentStage['options']);
-        foreach ($options as $index => $option) {
-            echo "<input type='radio' name='answer' value='{$index}'> {$option}<br>";
-        }
-        ?>
-        <button type="submit">Enviar Resposta</button>
-    </form>
-</div>
-
-
-<div class="audio-controls">
-    <audio id="background-audio" controls autoplay loop>
-        <source src="assets/audio/teste.mp3" type="audio/mpeg">
-            </audio>
-</div>
-</body>
-</html>
