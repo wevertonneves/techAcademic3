@@ -1,3 +1,4 @@
+import java.sql.Connection;
 import java.util.List;
 
 public class Stage {
@@ -8,17 +9,18 @@ public class Stage {
     private int correctOptionIndex;
     private Item requiredItem;
     private Challenge challenge;
-    private String hint; //
+    private String hint;
 
-    public Stage(int id, String description, String question, List<String> options, int correctOptionIndex, Item requiredItem, String hint) {
+    public Stage(int id, String description, String question, List<String> options, int correctOptionIndex, Item requiredItem, String hint, Connection connection) {
         this.id = id;
         this.description = description;
         this.question = question;
         this.options = options;
         this.correctOptionIndex = correctOptionIndex;
         this.requiredItem = requiredItem;
-        this.challenge = new Challenge(question, options, correctOptionIndex, hint); 
         this.hint = hint;
+        // Passa a conexão para o Challenge
+        this.challenge = new Challenge(question, options, correctOptionIndex, hint, connection);
     }
 
     public int getId() { return id; }
@@ -28,5 +30,5 @@ public class Stage {
     public int getCorrectOptionIndex() { return correctOptionIndex; }
     public Item getRequiredItem() { return requiredItem; }
     public Challenge getChallenge() { return challenge; }
-    public String getHint() { return hint; } // Getter para a dica
+    public String getHint() { return hint; }
 }

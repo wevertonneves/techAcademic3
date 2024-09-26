@@ -6,6 +6,7 @@ public class DatabaseManager {
     private static final String URL = "jdbc:mysql://localhost:3306/adventure_game";
     private static final String USER = "root";
     private static final String PASSWORD = "";
+
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
@@ -27,13 +28,13 @@ public class DatabaseManager {
                 int correctOptionIndex = rs.getInt("correct_option_index");
                 String hint = rs.getString("hint");
 
-                // Carregar o item necessário para a fase
+
                 int itemId = rs.getInt("item_id");
                 String itemName = rs.getString("item_name");
                 Item requiredItem = new Item(itemId, itemName);
 
-                // Criar o objeto Stage e adicionar à lista
-                Stage stage = new Stage(id, description, question, options, correctOptionIndex, requiredItem, hint);
+
+                Stage stage = new Stage(id, description, question, options, correctOptionIndex, requiredItem, hint, conn);
                 stages.add(stage);
             }
         } catch (SQLException e) {

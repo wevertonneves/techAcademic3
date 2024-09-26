@@ -34,12 +34,12 @@ public class Game {
 
         while (player.getCurrentStage() <= stages.size()) {
             Stage currentStage = stages.get(player.getCurrentStage() - 1);
-            System.out.println("Você está na fase: " + currentStage.getDescription());
+            System.out.println("" + currentStage.getDescription());
 
 
             Item requiredItem = currentStage.getRequiredItem();
             if (!player.getCollectedItems().contains(requiredItem)) {
-                System.out.println("Você precisa do item: " + requiredItem.getName() + " para avançar.");
+
 
 
                 boolean success = currentStage.getChallenge().execute();
@@ -67,13 +67,13 @@ public class Game {
 
 
     public static void main(String[] args) {
-        // Cria um jogador de exemplo
+
         Player player = new Player(1, "Jogador 1");
 
-        // Cria uma instância do jogo com o jogador
+
         Game game = new Game(player);
 
-        // Inicia o jogo
+        
         game.start();
     }
 }
